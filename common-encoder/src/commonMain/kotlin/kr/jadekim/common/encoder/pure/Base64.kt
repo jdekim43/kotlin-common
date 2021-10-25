@@ -51,7 +51,7 @@ object Base64 : Encoder {
 
     override fun decode(data: ByteArray): ByteArray {
         val src = data.filter { !DECODE_BYPASS_CHARS.contains(it) }
-        val result = ByteArray(data.size)
+        val result = ByteArray(src.size)
 
         var m = 0
         var n = 0
@@ -62,10 +62,10 @@ object Base64 : Encoder {
                 continue
             }
 
-            val b0 = DECODE_MAP[src[n].asU8()]
-            val b1 = DECODE_MAP[src[n].asU8()]
-            val b2 = DECODE_MAP[src[n].asU8()]
-            val b3 = DECODE_MAP[src[n].asU8()]
+            val b0 = if (n < src.size) DECODE_MAP[src[n++].asU8()] else 64
+            val b1 = if (n < src.size) DECODE_MAP[src[n++].asU8()] else 64
+            val b2 = if (n < src.size) DECODE_MAP[src[n++].asU8()] else 64
+            val b3 = if (n < src.size) DECODE_MAP[src[n++].asU8()] else 64
             result[m++] = (b0 shl 2 or (b1 shr 4)).toByte()
             if (b2 < 64) {
                 result[m++] = (b1 shl 4 or (b2 shr 2)).toByte()
