@@ -1,12 +1,12 @@
 plugins {
-    kotlin("multiplatform") version "1.5.30"
-    id("org.jetbrains.dokka") version "1.5.30"
+    kotlin("multiplatform") version "1.6.21"
+    id("org.jetbrains.dokka") version "1.6.20"
     id("maven-publish")
     id("signing")
 }
 
 group = "kr.jadekim"
-version = "2.0.1"
+version = "2.0.3-alpha1"
 
 allprojects {
     apply {
@@ -26,13 +26,15 @@ allprojects {
     kotlin {
         jvm {
             compilations.all {
-                kotlinOptions.jvmTarget = "1.8"
+                val jvmTarget: String by rootProject
+
+                kotlinOptions.jvmTarget = jvmTarget
             }
             testRuns["test"].executionTask.configure {
                 useJUnitPlatform()
             }
         }
-        js(LEGACY) {
+        js(IR) {
             browser()
             nodejs()
         }
