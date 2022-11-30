@@ -1,12 +1,12 @@
 plugins {
-    kotlin("multiplatform") version "1.6.21"
-    id("org.jetbrains.dokka") version "1.6.20"
+    kotlin("multiplatform") version "1.7.22"
+    id("org.jetbrains.dokka") version "1.7.20"
     id("maven-publish")
     id("signing")
 }
 
 group = "kr.jadekim"
-version = "2.0.3-alpha1"
+version = "2.0.4"
 
 allprojects {
     apply {
@@ -34,10 +34,10 @@ allprojects {
                 useJUnitPlatform()
             }
         }
-        js(IR) {
-            browser()
-            nodejs()
-        }
+//        js(IR) {
+//            browser()
+//            nodejs()
+//        }
 
         @Suppress("UNUSED_VARIABLE")
         sourceSets {
@@ -60,12 +60,12 @@ allprojects {
                     compileOnly("org.junit.jupiter:junit-jupiter-params:$junitVersion")
                 }
             }
-            val jsMain by getting
-            val jsTest by getting {
-                dependencies {
-                    implementation(kotlin("test-js"))
-                }
-            }
+//            val jsMain by getting
+//            val jsTest by getting {
+//                dependencies {
+//                    implementation(kotlin("test-js"))
+//                }
+//            }
         }
     }
 

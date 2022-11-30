@@ -21,6 +21,15 @@ actual val HMAC_SHA_1 = HashFunction { data, key ->
     mac.doFinal(data)
 }
 
+actual val HMAC_SHA_256 = HashFunction { data, key ->
+    val mac = Mac.getInstance("HmacSHA256")
+
+    val keySpec = SecretKeySpec(key, "HmacSHA256")
+    mac.init(keySpec)
+
+    mac.doFinal(data)
+}
+
 actual val HMAC_SHA_512 = HashFunction { data, key ->
     val mac = Mac.getInstance("HmacSHA512")
 
