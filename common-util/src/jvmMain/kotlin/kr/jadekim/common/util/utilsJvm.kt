@@ -13,22 +13,52 @@ fun shutdownHook(block: () -> Unit) {
     Runtime.getRuntime().addShutdownHook(thread(start = false, block = block))
 }
 
-fun loadPropertiesFile(propertyFiles: List<File>, properties: Properties = Properties()): Properties {
-    return propertyFiles
-        .filter { it.canRead() }
-        .map { it.inputStream() }
-        .let { loadProperties(it, properties) }
-}
-
-fun loadProperties(sources: List<InputStream>, properties: Properties = Properties()): Properties {
-    properties.putAll(System.getProperties())
-    properties.putAll(System.getenv())
-
-    sources.forEach {
-        it.use {
-            properties.load(it)
-        }
+fun Properties.load(vararg files: File, includeSystemProperties: Boolean = false) {
+    if (includeSystemProperties) {
+        loadFromSystem()
     }
 
-    return properties
+    return files
+        .filter { it.canRead() }
+        .map { it.inputStream() }
+        .let { load(it, false) }
+}
+
+fun Properties.load(
+    inputStreams: Iterable<InputStream>,
+    includeSystemProperties: Boolean = false,
+) {
+    if (includeSystemProperties) {
+        loadFromSystem()
+    }
+
+    inputStreams.forEach { source ->
+        source.use { load(it) }
+    }
+}
+
+fun Properties.loadFromFileTree(directory: File, prefix: String = "") {
+    if (!directory.isDirectory) {
+        return
+    }
+
+    val files = directory.listFiles() ?: return
+
+    for (file in files) {
+        if (file.isDirectory) {
+            loadFromFileTree(file, prefix + file.name + '.')
+            continue
+        }
+
+        put(prefix + file.name, file.readText())
+    }
+}
+
+private fun Properties.loadFromSystem(environmentVariables: Boolean = true, properties: Boolean = true) {
+    if (environmentVariables) {
+        putAll(System.getenv())
+    }
+    if (properties) {
+        putAll(System.getProperties())
+    }
 }
