@@ -8,9 +8,6 @@ plugins {
     id("org.jreleaser") version "1.18.0"
 }
 
-group = "kr.jadekim"
-version = "2.1.2"
-
 allprojects {
     apply {
         plugin("kotlin-multiplatform")
@@ -18,8 +15,8 @@ allprojects {
         plugin("maven-publish")
     }
 
-    group = rootProject.group
-    version = rootProject.version
+    group = "kr.jadekim"
+    version = "2.1.2"
 
     repositories {
         mavenCentral()
@@ -163,16 +160,10 @@ jreleaser {
     }
 }
 
-val release = tasks.named("jreleaserFullRelease") {
+tasks.named("publish") {
     subprojects.forEach {
         dependsOn("${it.name}:publish")
     }
-}
 
-tasks.named("publish") {
-    subprojects.forEach {
-        finalizedBy("${it.name}:publish")
-    }
-
-    finalizedBy(release)
+    finalizedBy(":jreleaserFullRelease")
 }
